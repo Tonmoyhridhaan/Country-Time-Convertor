@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Time</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+</head>
+<body>
+
+    <main class="my-auto">
+        <div class="container">
+            <h1>Current Time</h1>
+            <p id="countryTime">Loading...</p>
+            <div class="row flex">
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="">Choose Country</label>
+                                <select class="form-control" name="country1" id="country1" onchange="f_country1()">
+                                    <option value="">default</option>
+                                    <option value="Asia/Dacca">Asia/Dacca</option>
+                                    <option value="Australia/Melbourne">Australia/Melbourne</option>
+                                </select>
+                            </div>
+                          
+                        </div>
+                      </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                       
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="">Choose Country</label>
+                                <select class="form-control" name="country1" id="country2" onchange="f_country2()">
+                                    <option value="">default</option>
+                                    <option value="Asia/Dacca">Asia/Dacca</option>
+                                    <option value="Australia/Melbourne">Australia/Melbourne</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row flex mt-4">
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                           
+                            <div class="form-group ">
+                                <input type="time" class="form-control" id="time1" onchange="time1()">
+                            </div>
+                        </div>
+                      </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <div class="form-group ">
+                                <input type="time" class="form-control" id="time2" onchange="time2()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        var country1="", country2="";
+        var time_1="",time_2="";
+        var diff= 0;
+        var fg = 1;
+        function calculateTimeDifference(time1, time2) {
+            // Convert time strings to Date objects
+            const date1 = new Date(`2000-01-01T${time1}:00`);
+            const date2 = new Date(`2000-01-01T${time2}:00`);
+        
+            // Calculate the time difference in milliseconds
+            const timeDifferenceInMilliseconds = Math.abs(date2 - date1);
+        
+            // Convert the time difference to hours and minutes
+            const hours = Math.floor(timeDifferenceInMilliseconds / (60 * 60 * 1000));
+            const minutes = Math.floor((timeDifferenceInMilliseconds % (60 * 60 * 1000)) / (60 * 1000));
+        
+            return hours+":" +minutes;
+        }
+        function compareTimes(time1, time2) {
+            // Convert time strings to Date objects
+            const date1 = new Date(`2000-01-01T${time1}:00`);
+            const date2 = new Date(`2000-01-01T${time2}:00`);
+
+            // Compare the Date objects
+            if (date1 < date2) {
+                return 1;
+            } else if (date1 > date2) {
+                return 2;
+            } else {
+                return 0;
+            }
+        }
+        function parseTimeToMilliseconds(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 * 60 * 1000 + minutes * 60 * 1000;
+        }
+        function f_country1(){
+            country1 = document.getElementById("country1").value;
+            //console.log(country1);
+            var now  = luxon.DateTime.now().setZone(country1);
+            //console.log(now.toFormat('HH:mm'));
+            time_1 = now.toFormat('HH:mm');
+            var time1 = document.getElementById("time1");
+            console.log(time_1);
+            time1.value = time_1;
+
+            
+            now  = luxon.DateTime.now().setZone(country2);
+            
+            time_2 = now.toFormat('HH:mm');
+            console.log(time_2);
+            var time2 = document.getElementById("time2");
+            time2.value = time_2;
+            diff = calculateTimeDifference(time_1,time_2);
+            console.log(calculateTimeDifference(time_1,time_2));
+
+          
+            
+        }
+        function f_country2(){
+            country2 = document.getElementById("country2").value;
+            //console.log(country2);
+            var now  = luxon.DateTime.now().setZone(country2);
+            //console.log(now.toFormat('HH:mm'));
+            time_2 = now.toFormat('HH:mm');
+            var time2 = document.getElementById("time2");
+            time2.value = time_2;
+
+            now  = luxon.DateTime.now().setZone(country1);
+            time_1 = now.toFormat('HH:mm');
+            var time1 = document.getElementById("time1");
+            time1.value = time_1;
+            diff = calculateTimeDifference(time_1,time_2);
+            console.log(calculateTimeDifference(time_1,time_2));
+        }
+        function time1(){
+            var now  = luxon.DateTime.now().setZone(country1);
+            time_1 = now.toFormat('HH:mm');
+            now  = luxon.DateTime.now().setZone(country2);
+            time_2 = now.toFormat('HH:mm');
+
+            var time1 = document.getElementById("time1").value;
+            
+            var dif =  calculateTimeDifference(time_1,time1);
+            const baseDate = new Date(`2000-01-01T${time_2}:00`);
+            if(compareTimes(time1,time_1)==2){
+
+                const timeDifferenceMilliseconds = parseTimeToMilliseconds(dif);
+
+                // Calculate the result time in milliseconds based on the option
+                const resultTimeMilliseconds = baseDate.getTime() + timeDifferenceMilliseconds;
+
+                // Convert the result time to a Date object
+                const resultDate = new Date(resultTimeMilliseconds);
+
+                // Format the result time
+                const resultTime = resultDate.toTimeString().slice(0, 5);
+
+               
+                var time2 = document.getElementById("time2");
+                time2.value = resultTime;
+
+            }
+            else if(compareTimes(time1,time_1)==1){
+                const timeDifferenceMilliseconds = parseTimeToMilliseconds(dif);
+
+                // Calculate the result time in milliseconds based on the option
+                const resultTimeMilliseconds = baseDate.getTime() - timeDifferenceMilliseconds;
+
+                // Convert the result time to a Date object
+                const resultDate = new Date(resultTimeMilliseconds);
+
+                // Format the result time
+                const resultTime = resultDate.toTimeString().slice(0, 5);
+
+
+                var time2 = document.getElementById("time2");
+                time2.value = resultTime;
+
+            }
+        }
+        function time2(){
+            var now  = luxon.DateTime.now().setZone(country1);
+            time_1 = now.toFormat('HH:mm');
+            now  = luxon.DateTime.now().setZone(country2);
+            time_2 = now.toFormat('HH:mm');
+
+            var time2 = document.getElementById("time2").value;
+            
+            var dif =  calculateTimeDifference(time_2,time2);
+            const baseDate = new Date(`2000-01-01T${time_1}:00`);
+            if(compareTimes(time2,time_2)==2){
+
+                const timeDifferenceMilliseconds = parseTimeToMilliseconds(dif);
+
+                // Calculate the result time in milliseconds based on the option
+                const resultTimeMilliseconds = baseDate.getTime() + timeDifferenceMilliseconds;
+
+                // Convert the result time to a Date object
+                const resultDate = new Date(resultTimeMilliseconds);
+
+                // Format the result time
+                const resultTime = resultDate.toTimeString().slice(0, 5);
+
+               
+                var time1 = document.getElementById("time1");
+                time1.value = resultTime;
+
+            }
+            else if(compareTimes(time2,time_2)==1){
+                const timeDifferenceMilliseconds = parseTimeToMilliseconds(dif);
+
+                // Calculate the result time in milliseconds based on the option
+                const resultTimeMilliseconds = baseDate.getTime() - timeDifferenceMilliseconds;
+
+                // Convert the result time to a Date object
+                const resultDate = new Date(resultTimeMilliseconds);
+
+                // Format the result time
+                const resultTime = resultDate.toTimeString().slice(0, 5);
+
+
+                var time1 = document.getElementById("time1");
+                time1.value = resultTime;
+
+            }
+        }
+
+    </script>
+
+    <script src="https://moment.github.io/luxon/global/luxon.min.js"></script>
+    <script>
+        const now  = luxon.DateTime.now();
+        console.log(now);
+    </script>
+</body>
+</html>
